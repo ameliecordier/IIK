@@ -1,4 +1,5 @@
 from csvhandler import miningPatterns
+import random
 
 mp = miningPatterns.MiningPatterns()
 
@@ -17,7 +18,10 @@ def test_validFrequence():
     Nb occurrence = longueur d'une ligne - 13 premières colonnes
     Fréquence est dans la col 4
     """
-    assert int(mp.results[3][4]) == len(mp.results[3]) - 13
+    testValues = random.sample(range(len(mp.results)),10)
+
+    for val in testValues:
+        assert int(mp.results[val][4]) == len(mp.results[val]) - 13
 
 def test_validLength():
     """
@@ -26,7 +30,10 @@ def test_validLength():
     Pattern est dans la col 1
     Longueur est dans la col 3
     """
-    assert len(mp.results[3][1].split(",")) == int(mp.results[3][3])
+    testValues = random.sample(range(len(mp.results)),10)
+
+    for val in testValues:
+        assert len(mp.results[val][1].split(",")) == int(mp.results[val][3])
 
 def test_validStampList():
     """
@@ -35,10 +42,10 @@ def test_validStampList():
     La longueur est dans la col 3
     La fréquence (et donc le nb d'occurrences) est dans la col 4
     """
-    for i in range(int(mp.results[8][4])):
-        x = int(mp.results[8][3])
-        y = len(mp.results[8][13+i][2].split(","))
-        print(x, y)
-        assert  x == y
+    testValues = random.sample(range(len(mp.results)),10)
 
-
+    for val in testValues:
+        for i in range(int(mp.results[val][4])):
+            x = int(mp.results[val][3])
+            y = len(mp.results[val][13+i][2].split(","))
+            assert  x == y
