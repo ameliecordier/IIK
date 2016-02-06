@@ -58,6 +58,14 @@ class MiningPatterns:
         pprint.pprint(self.headings)
         pprint.pprint(self.results)
 
+    def exportResults(self, filename):
+        """
+        Écriture des résultats dans un fichier dont le nom doit être passé en paramètre
+        """
+        with open(filename, 'w', newline='') as csvfile:
+            csvwriter = csv.writer(csvfile, delimiter=';')
+            for line in self.results:
+                csvwriter.writerow(line)
 
     """
     Tout ce qui est "raw" est là à des fins de debug uniquement,

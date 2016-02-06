@@ -1,4 +1,4 @@
-from csvhandler import expertPatterns
+from datahandler import expertPatterns
 """
 ATTENTION
 Les tests ici sont directement dépendants du fichier choisi

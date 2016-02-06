@@ -1,4 +1,4 @@
-from csvhandler import miningPatterns
+from datahandler import miningPatterns
 import random
 
 mp = miningPatterns.MiningPatterns()
