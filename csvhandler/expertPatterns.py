@@ -2,6 +2,13 @@
 import csv
 import pprint
 
+"""
+Classe de manipulation des patterns experts
+Le fichier CSV est supposé sans entêtes
+La liste des patterns est une liste de strings, séparées par des virgules
+Exemple : ep = ['la,si,la,sold', 'la,si,do,si']
+"""
+
 class ExpertPatterns:
 
     def __init__(self):
@@ -10,8 +17,8 @@ class ExpertPatterns:
     def getPatterns(self, filename):
         """
         Récupère une liste de patterns depuis un fichier CSV sans entête
+        remplit patterns par une liste de strings (une string = un pattern Lily)
         :param filename: nom du fichier CSV
-        :return: liste de strings (une string = un pattern Lily)
         """
         with open(filename, newline='') as csvfile:
             linereader = csv.reader(csvfile, delimiter=',')
