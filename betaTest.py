@@ -1,5 +1,5 @@
-from csvhandler import expertPatterns
-from csvhandler import miningPatterns
+from datahandler import expertPatterns
+from datahandler import miningPatterns
 
 def tryExpertPatterns():
     """
@@ -36,3 +36,17 @@ def tryResults():
 #tryRawResults()
 #tryResults()
 
+
+
+"""
+filename="../DATA/ibert_results_test.csv"
+outputfilename="../DATA/output.csv"
+expertfile = "../DATA/ibert_motifs.csv"
+rr = miningPatterns.MiningPatterns()
+ep = expertPatterns.ExpertPatterns()
+ep.getPatterns(expertfile)
+rr.getMiningResults(filename)
+sortedrr = sortByFreq(rr)
+findPatterns(ep, rr)
+sortedrr.exportResults(outputfilename)
+"""
