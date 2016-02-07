@@ -11,10 +11,21 @@ def sortByFreq(mp):
     :param mp: un objet de type miningPatterns
     :return:
     """
-
     mpFreq = miningPatterns.MiningPatterns()
     mpFreq.results = sorted(mp.results, key=lambda x: int(operator.itemgetter(4)(x)), reverse=True)
     return mpFreq
+
+def sortByCouv(mp):
+    """
+    Trie un résultat de type miningPatterns par couverture
+    Retourne un objet de type miningPatterns
+    :param mp: un objet de type miningPatterns
+    :return:
+    """
+    mpFreq = miningPatterns.MiningPatterns()
+    mpFreq.results = sorted(mp.results, key=lambda x: int(operator.itemgetter(7)(x)), reverse=True)
+    return mpFreq
+
 
 
 
