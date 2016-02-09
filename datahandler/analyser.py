@@ -30,15 +30,25 @@ def findPatterns(expertPatterns, miningPatterns):
     :param miningPatterns: les patterns issus de la fouille
     :return: TODO
     """
+    linenumber = 0
+    results = []
     for line in miningPatterns.results:
         pattern = line[1]
         try:
             idx = expertPatterns.patterns.index(pattern)
-            print("Pattern fouillé : "+ pattern)
-            print("Pattern expert : "+expertPatterns.patterns[idx])
+            element = []
+            element.append(pattern)
+            element.append(linenumber)
+            element.append(idx)
+            results.append(element)
         except ValueError:
             print("Pattern non trouvé : "+pattern)
             pass
+        linenumber+=1
+    return results
+
+
+
 
 
 
