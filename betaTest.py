@@ -48,10 +48,33 @@ def tryFindPatterns():
     ep = expertPatterns.ExpertPatterns()
     rr.getMiningResults(filename)
     ep.getPatterns(expertfile)
-    sortedrr = analyser.sortBy(4, True, rr)
-    resultats = analyser.findPatterns(ep, sortedrr)
+    sortedra = analyser.sortBy(0, False, rr)
+    sortedrb = analyser.sortBy(4, True, rr)
+    sortedrc = analyser.sortBy(7, True, rr)
+
+    ra = analyser.findPatterns(ep, sortedra)
+    rb = analyser.findPatterns(ep, sortedrb)
+    rc = analyser.findPatterns(ep, sortedrc)
+
     print("Résultats : ")
-    pprint.pprint(resultats)
+    analyser.generateGraph(ra,rb,rc)
+
+def tryFindPatternsWithRevision():
+    """
+    Expérimentation de la méthode findPatternsWithRevision
+    """
+
+    filename="DATA/ibert_results.csv"
+    outputfilename="DATA/output.csv"
+    expertfile = "DATA/ibert_motifs.csv"
+
+    rr = miningPatterns.MiningPatterns()
+    ep = expertPatterns.ExpertPatterns()
+    rr.getMiningResults(filename)
+    ep.getPatterns(expertfile)
+
+    analyser.findPatternsWithRevision(ep, rr)
+
 
 
 
@@ -59,5 +82,6 @@ def tryFindPatterns():
 #tryRawResults()
 #tryResults()
 tryFindPatterns()
+#tryFindPatternsWithRevision()
 
 
