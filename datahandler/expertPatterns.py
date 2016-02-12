@@ -30,3 +30,12 @@ class ExpertPatterns:
         Affiche simplement la liste des patterns sur la sortie standard
         """
         pprint.pprint(self.patterns)
+
+    def getSetOfObselTypes(self):
+        """
+        :return: retourne le set des types d'obsels pour les besoins de vérification
+        """
+        temp = list(map(lambda x: x.split(","), self.patterns))
+        setOfObsels = set([y for x in temp for y in x])
+
+        return setOfObsels

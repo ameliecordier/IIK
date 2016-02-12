@@ -17,20 +17,22 @@ def teardown_module(module):
     print("=== Fin de test de la classe ExpertPatterns")
 
 def test_LenPatterns():
-        """
-        On vérifie que l'on a bien récupéré tous les patterns
-        """
-        assert len(ep.patterns) == 25
+    """
+    Vérification que tous les patterns sont récupérés
+    """
+    assert len(ep.patterns) == 25
 
 def test_isAGoodPatterns():
-        """
-        On vérifie que la liste est bien remplie
-        """
-        assert ep.patterns[4] == "do,la,si,do"
+    """
+    Vérification que les patterns récupérés sont corrects
+    """
+    assert ep.patterns[4] == "do,la,si,do"
 
-
-
-
-
+def test_returnsAGoodSet():
+    """
+    Vérification que le set des types est complet
+    """
+    test_set = {"do", "dod", "fa", "fad", "la", "mi", "re", "si", "sib", "sol", "sold"}
+    assert test_set == ep.getSetOfObselTypes()
 
 
