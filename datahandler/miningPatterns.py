@@ -2,91 +2,85 @@
 import csv
 import pprint
 
-class MiningPatterns:
+# UTILS
+def groupByPack(it, n):
     """
-    headings contient les entêtes de colonnes
-    results est une liste de patterns.
-    Chaque ligne de results est structurée de la façon suivante :
-    results[0] : numéro de motif
-    results[1] : motif Lily
-    results[2] : motif dmt4sp
-    results[3] : longueur
-    results[4] : frequence
-    results[5] : longueur * fréquence
-    results[6] : fermé ou non
-    results[7] : couverture événementielle
-    results[8] - results[12] : données DMT4SP
-    results[13+i] - fin : occurrences
-       results[13+i][0] : estampille de début du motif
-       results[13+i][1] : estampille de fin du motif (pas besoin)
-       results[13+i][2] : liste des estampilles de l'occurrence de motif
-       results[13+i][3] - results[13+i][fin] : données DMT4SP
+    Récupère une liste et fait des paquets de taille n
+    :param it: la liste
+    :param n: la taille des paquets souhaités
+    :return: un générateur de paquets
     """
+    first = it[:n]
+    yield first
 
-    def __init__(self):
-        # On a deux modes : raw pour les tests, et normal pour le fonctionnement classique
-        self.rawHeadings = []
-        self.rawResults = []
-        self.headings = []
-        self.results = []
+    nextValue = it[n:]
 
-    def getMiningResults(self, filename):
-        """
-        Initialise headings et results avec leurs contenus respectifs
-        :param filename: non du fichier
-        """
-        with open(filename, newline='') as csvfile:
-            linereader = csv.reader(csvfile, delimiter=";")
-            self.headings = next(linereader)
+    if nextValue:
+        assert len(nextValue) >= n
+        yield from groupByPack(it[n:], n)
 
-            for row in linereader:
-                pos = 0
-                lenLine = len(row)
-                pattern = []
-                while pos < 13: # Traitement des colonnes 1 à 13
-                    pattern.append(row[pos])
-                    pos += 1
-                while pos < lenLine:
-                    occurence = []
-                    for i in range(11):
-                        occurence.append(row[pos+i])
-                    pattern.append(occurence)
-                    pos += 11
-                self.results.append(pattern)
-
-    def printMiningResults(self):
-        pprint.pprint(self.headings)
-        pprint.pprint(self.results)
-
-    def exportResults(self, filename):
-        """
-        Écriture des résultats dans un fichier dont le nom doit être passé en paramètre
-        """
-        with open(filename, 'w', newline='') as csvfile:
-            csvwriter = csv.writer(csvfile, delimiter=';')
-            for line in self.results:
-                csvwriter.writerow(line)
-
+def readRows(filename, firstSize, packSize):
     """
-    Tout ce qui est "raw" est là à des fins de debug uniquement,
-    et n'est donc pas testé
+    Retourne un générateur de patterns à partir d'un fichier CSV
+    :param filename: nom du fichier
+    :param firstSize: taille du bloc d'infos générales
+    :param packSize: taille d'un bloc d'infos sur une occurrence
+    :return: générateur de Pattern
     """
-    def getRawMiningResults(self, filename):
+    #assert len(columnNames) == firstSize
+
+    with open(filename) as csvfile:
+        reader = csv.reader(csvfile, delimiter=';',)
+        headings = next(reader)
+        infosHeadings = headings[:firstSize]
+        occHeadings = headings[firstSize:firstSize+packSize]
+        print(len(occHeadings))
+        for row in reader:
+            infos = row[:firstSize]
+            occ = list(map(lambda  x : dict(zip(occHeadings, x)), groupByPack(row[firstSize:], packSize)))
+            yield Pattern(dict(zip(infosHeadings, infos)), occ)
+
+
+# CLASS PATTERN
+class Pattern:
+    """
+    Représentation d'un pattern et toutes les données, issus du mining
+    """
+    def __init__(self, infos, occ):
         """
-        Remplit la liste contenant les headers, et les résultats non structurés
-        :param filename: nom du fichier CSV
+        Un pattern contient les infos communes puis une liste par occurrence
+        :param infos: les infos générales sur le pattern
+        :param occ: les paquets d'infos pour chaque occurence
         """
-        with open(filename, newline='') as csvfile:
-            linereader = csv.reader(csvfile, delimiter=';')
-            self.rawHeadings = next(linereader)
+        self.infos = infos
+        self.occ = occ
 
-            for row in linereader:
-                self.rawResults.append(row)
+    def __str__(self):
+        """
+        Affichage brut d'un pattern
+        """
+        return "Pattern(%r, %r)" % (self.infos, self.occ)
 
-    def printRawHeading(self):
-        pprint.pprint(self.rawHeadings)
+    def getNbOccs(self):
+        """
+        Retourne le nombre d'occurrences connues d'un pattern
+        d'après le nombre de listes
+        :return: int (nombre d'occurrences)
+        """
+        return len(self.occ)
 
-    def printRawResults(self):
-        pprint.pprint(self.rawResults)
-
+    def convertDataToInt(self):
+        # TODO : could be
+        # TODO : ou alors, on déplace dans la création des listes
+        def convertToInt(x):
+            try:
+                value = int(x)
+            except:
+                value = x
+            return value
+        for key, value in self.infos.items():
+            self.infos[key] = convertToInt(value)
+        for occ in self.occ:
+            for keyocc, valueocc in occ.items():
+                occ[keyocc] = convertToInt(valueocc)
 

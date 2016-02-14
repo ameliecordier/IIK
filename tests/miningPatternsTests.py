@@ -1,51 +1,57 @@
 from datahandler import miningPatterns
 import random
 
-mp = miningPatterns.MiningPatterns()
 
-def setup_module(module):
-    print("")
-    print("Test de la classe MiningPatterns")
-    print("Lecture des résultats dans le fichier")
-    mp.getMiningResults("DATA/ibert_results_test.csv")
+class TestMiningPatterns:
 
-def teardown_module(module):
-    print("=== Fin de test de la classe MiningPatterns")
+    patterns = []
 
-def test_validFrequence():
-    """
-    On vérifie que la fréquence est égale au nb d'occurrences
-    Nb occurrence = longueur d'une ligne - 13 premières colonnes
-    Fréquence est dans la col 4
-    """
-    testValues = random.sample(range(len(mp.results)),10)
+    @classmethod
+    def setup_class(cls):
+        print("")
+        print("Test de la classe MiningPatterns")
+        print("Lecture des résultats dans le fichier")
+        filename = "DATA/Debussy_Syrinx_out1.csv"
+        firstSize = 13
+        packSize = 11
+        cls.patterns = list(miningPatterns.readRows(filename, firstSize, packSize))
+        for line in cls.patterns:
+            line.convertDataToInt()
 
-    for val in testValues:
-        assert int(mp.results[val][4]) == len(mp.results[val]) - 13
+    @classmethod
+    def teardown_class(cls):
+        print("=== Fin de test de la classe MiningPatterns")
 
-def test_validLength():
-    """
-    On vérifie que la longueur des patterns est valide
-    Nb occurrence = longueur d'une ligne - 13 premières colonnes
-    Pattern est dans la col 1
-    Longueur est dans la col 3
-    """
-    testValues = random.sample(range(len(mp.results)),10)
+    def test_validFreq(cls):
+        """
+        Vérifie que la fréquence est égale au nb d'occurrences
+        """
+        testValues = random.sample(range(len(cls.patterns)),10)
+        for val in testValues:
+            assert cls.patterns[val].infos.get("freq") == cls.patterns[val].getNbOccs()
 
-    for val in testValues:
-        assert len(mp.results[val][1].split(",")) == int(mp.results[val][3])
+    def test_validPatternLengthv(cls):
+        """
+        Vérifie que la longueur annoncée du pattern correspond
+        bien à la longueur réelle
+        """
+        testSet = random.sample(cls.patterns,10)
+        for pattern in testSet:
+            yield cls.validPattern, pattern
 
-def test_validStampList():
-    """
-    On vérifie que la longueur de chaque stampList est valide
-    Les stampLists sont dans les colonnes d'indice : results[ligne][13][2]
-    La longueur est dans la col 3
-    La fréquence (et donc le nb d'occurrences) est dans la col 4
-    """
-    testValues = random.sample(range(len(mp.results)),10)
+    def validPattern(self, p):
+        assert len(p.infos["motif Lily"].split(',')) == p.infos["long"]
 
-    for val in testValues:
-        for i in range(int(mp.results[val][4])):
-            x = int(mp.results[val][3])
-            y = len(mp.results[val][13+i][2].split(","))
-            assert  x == y
+
+"""    def test_validStampList(cls):
+        """
+   """     Vérifie que la longueur de chaque occurrence est valide
+        """
+      """  testValues = random.sample(range(len(cls.patterns)),10)
+        for val in testValues:
+            for occ in cls.patterns[val].occ:
+                x = (cls.patterns[val].infos["long"])
+                y = (len(occ["Stamps list"].split(",")))
+                print(x, y)
+                assert x == y
+""
