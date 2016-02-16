@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 import csv
-import pprint
 
 # UTILS
 def groupByPack(it, n):
@@ -16,7 +15,6 @@ def groupByPack(it, n):
     nextValue = it[n:]
 
     if nextValue:
-        assert len(nextValue) >= n
         yield from groupByPack(it[n:], n)
 
 def readRows(filename, firstSize, packSize):
@@ -27,7 +25,6 @@ def readRows(filename, firstSize, packSize):
     :param packSize: taille d'un bloc d'infos sur une occurrence
     :return: générateur de Pattern
     """
-    #assert len(columnNames) == firstSize
 
     with open(filename) as csvfile:
         reader = csv.reader(csvfile, delimiter=';',)
@@ -49,8 +46,8 @@ class Pattern:
     def __init__(self, infos, occ):
         """
         Un pattern contient les infos communes puis une liste par occurrence
-        :param infos: les infos générales sur le pattern
-        :param occ: les paquets d'infos pour chaque occurence
+        :param infos: les infos générales sur le pattern (dans un dictionnaire)
+        :param occ: les paquets d'infos pour chaque occurrence (dans un dictionnaire
         """
         self.infos = infos
         self.occ = occ

@@ -1,17 +1,20 @@
+#-*- coding: utf-8 -*-
 from datahandler import miningPatterns
+from nose.tools import assert_equals
 import random
 
 
 class TestMiningPatterns:
 
     patterns = []
+    nbTests = 15
 
     @classmethod
     def setup_class(cls):
         print("")
         print("Test de la classe MiningPatterns")
         print("Lecture des résultats dans le fichier")
-        filename = "DATA/Debussy_Syrinx_out1.csv"
+        filename = "DATA/Ibert_Entracte_out1.csv"
         firstSize = 13
         packSize = 11
         cls.patterns = list(miningPatterns.readRows(filename, firstSize, packSize))
@@ -24,34 +27,38 @@ class TestMiningPatterns:
 
     def test_validFreq(cls):
         """
-        Vérifie que la fréquence est égale au nb d'occurrences
+        Vérifie que la fréquence annoncée est égale au nb d'occurrences
         """
-        testValues = random.sample(range(len(cls.patterns)),10)
-        for val in testValues:
-            assert cls.patterns[val].infos.get("freq") == cls.patterns[val].getNbOccs()
+        def validFreq(p):
+            assert p.infos.get("freq") == p.getNbOccs()
 
-    def test_validPatternLengthv(cls):
-        """
-        Vérifie que la longueur annoncée du pattern correspond
-        bien à la longueur réelle
-        """
-        testSet = random.sample(cls.patterns,10)
+
+        testSet = random.sample(cls.patterns,cls.nbTests)
         for pattern in testSet:
-            yield cls.validPattern, pattern
-
-    def validPattern(self, p):
-        assert len(p.infos["motif Lily"].split(',')) == p.infos["long"]
+            yield validFreq, pattern
 
 
-"""    def test_validStampList(cls):
+    def test_validPatternLength(cls):
         """
-   """     Vérifie que la longueur de chaque occurrence est valide
+        Vérifie que la longueur annoncée correspond à la longueur réelle
         """
-      """  testValues = random.sample(range(len(cls.patterns)),10)
-        for val in testValues:
-            for occ in cls.patterns[val].occ:
-                x = (cls.patterns[val].infos["long"])
-                y = (len(occ["Stamps list"].split(",")))
-                print(x, y)
-                assert x == y
-""
+        def validPatternLength(p):
+            assert len(p.infos["motif Lily"].split(',')) == p.infos["long"]
+
+        testSet = random.sample(cls.patterns,cls.nbTests)
+        for pattern in testSet:
+            yield validPatternLength, pattern
+
+
+    def test_validStampList(cls):
+        """
+        Vérifie que la longueur de chaque occurrence (nb de timestamps) est valide
+        """
+        def validStampList(p):
+            patternLength = p.infos["long"]
+            for occ in p.occ:
+                assert_equals(patternLength, len(occ["Stamps list"].split(",")))
+        testSet = random.sample(cls.patterns,cls.nbTests)
+        for pattern in testSet:
+            yield validStampList, pattern
+

@@ -2,14 +2,15 @@
 import csv
 import pprint
 
-"""
-Classe de manipulation des patterns experts
-Le fichier CSV est supposé sans entêtes
-La liste des patterns est une liste de strings, séparées par des virgules
-Exemple : ep = ['la,si,la,sold', 'la,si,do,si']
-"""
 
 class ExpertPatterns:
+    """
+    Classe de manipulation des patterns experts
+    Le fichier CSV est supposé sans entêtes
+    La liste des patterns est une liste de strings, séparées par des virgules.
+    Exemple : ep = ['la,si,la,sold', 'la,si,do,si']
+    """
+
 
     def __init__(self):
         self.patterns = []
@@ -33,7 +34,8 @@ class ExpertPatterns:
 
     def getSetOfObselTypes(self):
         """
-        :return: retourne le set des types d'obsels pour les besoins de vérification
+        Récupère un set de types d'obsels
+        :return: retourne le set des types d'obsels
         """
         temp = list(map(lambda x: x.split(","), self.patterns))
         setOfObsels = set([y for x in temp for y in x])

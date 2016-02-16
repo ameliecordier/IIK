@@ -1,7 +1,7 @@
 from datahandler import expertPatterns
 from datahandler import miningPatterns
 from datahandler import analyser
-import pprint
+import random
 
 
 def tryExpertPatterns():
@@ -13,17 +13,33 @@ def tryExpertPatterns():
     ep = expertPatterns.ExpertPatterns()
     ep.getPatterns(filename)
     ep.printPatterns()
+    print(ep.getSetOfObselTypes())
 
 def tryRawResults():
     """
     Expérimentations de la classe MiningPatterns en mode Raw
     """
-    filename = "DATA/ibert_results_test.csv"
+    ibert = "DATA/ibert_results.csv"
+    debussy = "DATA/Debussy_Syrinx_out1.csv"
+    reichert = "DATA/Reichert_tarentelle_out1.csv"
 
+    ri = miningPatterns.MiningPatterns()
+    rb = miningPatterns.MiningPatterns()
     rr = miningPatterns.MiningPatterns()
-    rr.getRawMiningResults(filename)
-    rr.printRawHeading()
-    rr.printRawResults()
+
+    ri.getRawMiningResults(ibert)
+    rb.getRawMiningResults(debussy)
+    rr.getRawMiningResults(reichert)
+    for line in ri.rawResults:
+        if (len(line)-13)%11 != 0:
+            print("error")
+    for line in rb.rawResults:
+        if (len(line)-13)%11 != 0:
+            print("error")
+    for line in rr.rawResults:
+        if (len(line)-13)%11 != 0:
+            print("error")
+
 
 def tryResults():
     """
@@ -77,11 +93,9 @@ def tryFindPatternsWithRevision():
 
 
 
-
 #tryExpertPatterns()
 #tryRawResults()
 #tryResults()
-tryFindPatterns()
+#tryFindPatterns()
 #tryFindPatternsWithRevision()
-
 
