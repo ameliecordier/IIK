@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 import csv
+import pprint
 
 # UTILS
 def groupByPack(it, n):
@@ -17,13 +18,14 @@ def groupByPack(it, n):
     if nextValue:
         yield from groupByPack(it[n:], n)
 
+
 def readRows(filename, firstSize, packSize):
     """
     Retourne un générateur de patterns à partir d'un fichier CSV
     :param filename: nom du fichier
     :param firstSize: taille du bloc d'infos générales
     :param packSize: taille d'un bloc d'infos sur une occurrence
-    :return: générateur de Pattern
+    :return: générateur de Pattern avec les ints convertis
     """
 
     with open(filename) as csvfile:
@@ -35,7 +37,10 @@ def readRows(filename, firstSize, packSize):
         for row in reader:
             infos = row[:firstSize]
             occ = list(map(lambda  x : dict(zip(occHeadings, x)), groupByPack(row[firstSize:], packSize)))
-            yield Pattern(dict(zip(infosHeadings, infos)), occ)
+            #yield (Pattern(dict(zip(infosHeadings, infos)), occ)).convertDataToInt()
+            p = Pattern(dict(zip(infosHeadings, infos)), occ)
+            p.convertDataToInt()
+            yield p
 
 
 # CLASS PATTERN
@@ -47,7 +52,7 @@ class Pattern:
         """
         Un pattern contient les infos communes puis une liste par occurrence
         :param infos: les infos générales sur le pattern (dans un dictionnaire)
-        :param occ: les paquets d'infos pour chaque occurrence (dans un dictionnaire
+        :param occ: listes de paquets d'infos pour chaque occurrence (dans un dictionnaire)
         """
         self.infos = infos
         self.occ = occ
@@ -67,17 +72,33 @@ class Pattern:
         return len(self.occ)
 
     def convertDataToInt(self):
-        # TODO : could be
-        # TODO : ou alors, on déplace dans la création des listes
+        """
+        Utilitaire de conversion des strings en int sur les données d'entrée
+        """
+        #TODO : convertir les timestamps des occurrences en sets
         def convertToInt(x):
             try:
                 value = int(x)
             except:
                 value = x
             return value
+
         for key, value in self.infos.items():
             self.infos[key] = convertToInt(value)
         for occ in self.occ:
             for keyocc, valueocc in occ.items():
                 occ[keyocc] = convertToInt(valueocc)
 
+    def printInfos(self):
+        """
+        Affiche les titres de colonnes d'infos sur les patterns
+        """
+        print("Infos :")
+        print(self.infos.keys())
+
+    def printOccInfos(self):
+        """
+        Affiche les titres des colonnes d'infos sur les occurrences
+        """
+        print("Infos des occurences")
+        print(self.occ[0].keys())

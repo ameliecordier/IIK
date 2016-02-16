@@ -92,7 +92,16 @@ def tryFindPatternsWithRevision():
     analyser.findPatternsWithRevision(ep, rr)
 
 
+def tryTrucAlacon():
+    filename = "DATA/Ibert_Entracte_out1.csv"
+    firstSize = 13
+    packSize = 11
+    patterns = list(miningPatterns.readRows(filename, firstSize, packSize))
+    print(patterns[1])
+    patterns[1].printInfos()
+    patterns[1].printOccInfos()
 
+tryTrucAlacon()
 #tryExpertPatterns()
 #tryRawResults()
 #tryResults()

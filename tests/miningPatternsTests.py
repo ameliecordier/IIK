@@ -18,8 +18,7 @@ class TestMiningPatterns:
         firstSize = 13
         packSize = 11
         cls.patterns = list(miningPatterns.readRows(filename, firstSize, packSize))
-        for line in cls.patterns:
-            line.convertDataToInt()
+
 
     @classmethod
     def teardown_class(cls):
