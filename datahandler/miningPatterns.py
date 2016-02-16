@@ -39,7 +39,7 @@ def readRows(filename, firstSize, packSize):
             occ = list(map(lambda  x : dict(zip(occHeadings, x)), groupByPack(row[firstSize:], packSize)))
             #yield (Pattern(dict(zip(infosHeadings, infos)), occ)).convertDataToInt()
             p = Pattern(dict(zip(infosHeadings, infos)), occ)
-            p.convertDataToInt()
+            p.dataPreprocessing()
             yield p
 
 
@@ -71,11 +71,11 @@ class Pattern:
         """
         return len(self.occ)
 
-    def convertDataToInt(self):
+    def dataPreprocessing(self):
         """
         Utilitaire de conversion des strings en int sur les données d'entrée
+        Convertit également les stamps list en sets
         """
-        #TODO : convertir les timestamps des occurrences en sets
         def convertToInt(x):
             try:
                 value = int(x)
@@ -87,7 +87,10 @@ class Pattern:
             self.infos[key] = convertToInt(value)
         for occ in self.occ:
             for keyocc, valueocc in occ.items():
-                occ[keyocc] = convertToInt(valueocc)
+                if keyocc == "Stamps list":
+                    occ[keyocc] = set(list(map(int, valueocc.split(","))))
+                else:
+                    occ[keyocc] = convertToInt(valueocc)
 
     def printInfos(self):
         """
