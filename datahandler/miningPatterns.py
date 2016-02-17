@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 import csv
-import pprint
 
 # UTILS
 def groupByPack(it, n):
@@ -41,6 +40,43 @@ def readRows(filename, firstSize, packSize):
             p = Pattern(dict(zip(infosHeadings, infos)), occ)
             p.dataPreprocessing()
             yield p
+
+def filterInfos(patterns, acceptedInfos):
+    """
+    Filtre les infos en fonction des noms de cols passés en paramètre
+    :param patterns: liste de patterns
+    :param acceptedInfos: liste des infos acceptées (string)
+    :return: une liste de patterns filtrés
+    """
+    #TODO : not used at the moment because improvement is needed
+    for row in patterns:
+        new_infos = {}
+        for key in acceptedInfos:
+            new_infos[key] = row.infos[key]
+
+        yield Pattern(new_infos, row.lines)
+
+def sortBy(patterns, criteria):
+    """
+    Trie la liste des patterns selon les colonnes et ordres passés en paramètres
+    Exemples :
+    miningPatterns.sortBy(rr, [("freq", "desc")]) trie par fréquence décroissante
+    miningPatterns.sortBy(rr, [("freq", "desc"), ("cov int", "asc")]) trie par fréq décroissante puis par covint croissante
+    :param patterns: liste des patterns
+    :param criteria: liste de tuples (noms cols, ordre)
+    :return: liste de patterns triée selon les critères
+    """
+
+    #TODO: doit être testé
+    criteria.reverse()
+    for crit in criteria:
+        if crit[1] == "asc":
+            order = False
+        else:
+            order = True
+        patterns.sort(key=lambda pattern: pattern.infos[crit[0]], reverse=order)
+
+
 
 
 # CLASS PATTERN
@@ -105,3 +141,8 @@ class Pattern:
         """
         print("Infos des occurences")
         print(self.occ[0].keys())
+
+
+
+
+

@@ -91,20 +91,29 @@ def tryFindPatternsWithRevision():
 
     analyser.findPatternsWithRevision(ep, rr)
 
+def tryNewMiningPatterns():
 
-def tryTrucAlacon():
-    filename = "DATA/Ibert_Entracte_out1.csv"
-    firstSize = 13
-    packSize = 11
-    patterns = list(miningPatterns.readRows(filename, firstSize, packSize))
-    print(patterns[1])
-    patterns[1].printInfos()
-    patterns[1].printOccInfos()
+    filename="DATA/sortDataSet.csv"
+    #filename="DATA/Ibert_Entracte_out1.csv"
 
-tryTrucAlacon()
+    rr = list(miningPatterns.readRows(filename, 13, 11))
+
+    for elt in rr:
+        print(elt)
+
+    print("Break")
+
+    miningPatterns.sortBy(rr, [("freq", "desc"), ("cov int", "asc"), ("recov", "desc")])
+
+
+    for elt in rr:
+        print(elt.infos["freq"], elt.infos["cov int"], elt.infos["recov"])
+
+
+
 #tryExpertPatterns()
 #tryRawResults()
 #tryResults()
 #tryFindPatterns()
 #tryFindPatternsWithRevision()
-
+tryNewMiningPatterns()
