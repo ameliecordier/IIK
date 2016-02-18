@@ -1,5 +1,6 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import csv
+
 
 # UTILS
 def groupByPack(it, n):
@@ -28,18 +29,19 @@ def readRows(filename, firstSize, packSize):
     """
 
     with open(filename) as csvfile:
-        reader = csv.reader(csvfile, delimiter=';',)
+        reader = csv.reader(csvfile, delimiter=';', )
         headings = next(reader)
         infosHeadings = headings[:firstSize]
-        occHeadings = headings[firstSize:firstSize+packSize]
+        occHeadings = headings[firstSize:firstSize + packSize]
         print(len(occHeadings))
         for row in reader:
             infos = row[:firstSize]
-            occ = list(map(lambda  x : dict(zip(occHeadings, x)), groupByPack(row[firstSize:], packSize)))
-            #yield (Pattern(dict(zip(infosHeadings, infos)), occ)).convertDataToInt()
+            occ = list(map(lambda x: dict(zip(occHeadings, x)), groupByPack(row[firstSize:], packSize)))
+            # yield (Pattern(dict(zip(infosHeadings, infos)), occ)).convertDataToInt()
             p = Pattern(dict(zip(infosHeadings, infos)), occ)
             p.dataPreprocessing()
             yield p
+
 
 def filterInfos(patterns, acceptedInfos):
     """
@@ -48,13 +50,14 @@ def filterInfos(patterns, acceptedInfos):
     :param acceptedInfos: liste des infos acceptées (string)
     :return: une liste de patterns filtrés
     """
-    #TODO : not used at the moment because improvement is needed
+    # TODO : not used at the moment because improvement is needed
     for row in patterns:
         new_infos = {}
         for key in acceptedInfos:
             new_infos[key] = row.infos[key]
 
         yield Pattern(new_infos, row.lines)
+
 
 def sortBy(patterns, criteria):
     """
@@ -67,7 +70,7 @@ def sortBy(patterns, criteria):
     :return: liste de patterns triée selon les critères
     """
 
-    #TODO: doit être testé
+    # TODO: doit être testé
     criteria.reverse()
     for crit in criteria:
         if crit[1] == "asc":
@@ -77,13 +80,12 @@ def sortBy(patterns, criteria):
         patterns.sort(key=lambda pattern: pattern.infos[crit[0]], reverse=order)
 
 
-
-
 # CLASS PATTERN
 class Pattern:
     """
     Représentation d'un pattern et toutes les données, issus du mining
     """
+
     def __init__(self, infos, occ):
         """
         Un pattern contient les infos communes puis une liste par occurrence
@@ -112,6 +114,7 @@ class Pattern:
         Utilitaire de conversion des strings en int sur les données d'entrée
         Convertit également les stamps list en sets
         """
+
         def convertToInt(x):
             try:
                 value = int(x)
@@ -141,8 +144,3 @@ class Pattern:
         """
         print("Infos des occurences")
         print(self.occ[0].keys())
-
-
-
-
-

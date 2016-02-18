@@ -2,6 +2,7 @@ from datahandler import expertPatterns
 from datahandler import miningPatterns
 from datahandler import analyser as analyser
 
+
 def tryExpertPatterns(filename):
     """
     Expérimentations avec la classe expertPatterns
@@ -25,13 +26,13 @@ def tryRawResults(filea, fileb, filec):
     rb.getRawMiningResults(fileb)
     rr.getRawMiningResults(filec)
     for line in ri.rawResults:
-        if (len(line)-13)%11 != 0:
+        if (len(line) - 13) % 11 != 0:
             print("error")
     for line in rb.rawResults:
-        if (len(line)-13)%11 != 0:
+        if (len(line) - 13) % 11 != 0:
             print("error")
     for line in rr.rawResults:
-        if (len(line)-13)%11 != 0:
+        if (len(line) - 13) % 11 != 0:
             print("error")
 
 
@@ -63,7 +64,7 @@ def tryFindPatterns(mining, expert, output):
     rc = analyser.findPatterns(ep, sortedrc)
 
     print("Résultats : ")
-    analyser.generateGraph(ra,rb,rc)
+    analyser.generateGraph(ra, rb, rc)
 
 
 def tryNewMiningPatterns(filename):
@@ -79,11 +80,10 @@ def tryNewMiningPatterns(filename):
         print(elt.infos["freq"], elt.infos["cov int"], elt.infos["recov"])
 
 
-def tryAnalysis(mining, expert, output, output2):
+def try_analysis(mining, expert, output, output2):
     """
     Experimentations des analyses brutes
     """
-
 
     ep = expertPatterns.ExpertPatterns()
     ep.getPatterns(expert)
@@ -107,16 +107,15 @@ ibert_expert = "DATA/ibert_motifs.csv"
 reichert = "DATA/Reichert_tarentelle_out1.csv"
 reichert_expert = "DATA/Reichert_tarentelle_motifs.txt"
 
+# tryExpertPatterns(filename)
+# tryRawResults(filea, fileb, filec)
+# tryResults(filename)
+# tryFindPatterns(mining, expert, output)
+# tryNewMiningPatterns(filename)
 
-#tryExpertPatterns(filename)
-#tryRawResults(filea, fileb, filec)
-#tryResults(filename)
-#tryFindPatterns(mining, expert, output)
-#tryNewMiningPatterns(filename)
-
-#TODO : tests des méthodes above
+# TODO : tests des méthodes above
 mining = ibert
-expert =ibert_expert
+expert = ibert_expert
 output = "DATA/output.csv"
 output2 = "DATA/output2.csv"
 tryAnalysis(mining, expert, output, output2)

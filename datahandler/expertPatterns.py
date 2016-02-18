@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import csv
 import pprint
 
@@ -10,7 +10,6 @@ class ExpertPatterns:
     La liste des patterns est une liste de strings, séparées par des virgules.
     Exemple : ep = ['la,si,la,sold', 'la,si,do,si']
     """
-
 
     def __init__(self):
         self.patterns = []

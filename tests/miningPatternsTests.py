@@ -1,7 +1,9 @@
 #-*- coding: utf-8 -*-
-from datahandler import miningPatterns
-from nose.tools import assert_equals
 import random
+
+from nose.tools import assert_equals
+
+from datahandler import miningPatterns
 
 
 class TestMiningPatterns:

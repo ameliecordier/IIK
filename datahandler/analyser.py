@@ -1,10 +1,7 @@
-#-*- coding: utf-8 -*-
-from datahandler import expertPatterns
-from datahandler import miningPatterns
-import operator
+# -*- coding: utf-8 -*-
 from matplotlib import pyplot as plt
-import numpy as np
 import csv
+
 
 def findPatterns(expertPatterns, miningPatterns):
     """
@@ -28,9 +25,10 @@ def findPatterns(expertPatterns, miningPatterns):
             analyser.addResult(result)
         except ValueError:
             pass
-        idxmining+=1
+        idxmining += 1
 
     return analyser
+
 
 def findPatternsWithRevision(expertPatterns, miningPatterns):
     """
@@ -44,8 +42,8 @@ def findPatternsWithRevision(expertPatterns, miningPatterns):
             idx = expertPatterns.patterns.index(pattern)
             # Start du cleanup
             # On supprime le patter de la liste
-            #editedMP.results
-            #for candidate in editedMP.results:
+            # editedMP.results
+            # for candidate in editedMP.results:
             #    print(candidate)
             print(pattern)
             print(line)
@@ -55,8 +53,8 @@ def findPatternsWithRevision(expertPatterns, miningPatterns):
                 timestamps.append(line[i][2].split(','))
 
             flattimestamps = [y for x in timestamps for y in x]
-            #print(timestamps)
-            #print(flattimestamps)
+            # print(timestamps)
+            # print(flattimestamps)
 
             for candidate in editedMP.results:
                 print("Candidate")
@@ -65,15 +63,15 @@ def findPatternsWithRevision(expertPatterns, miningPatterns):
                 # Traitement de la première occurrence
 
                 # Traitement des autres occurrences
-                for j in range(13,len(candidate)):
+                for j in range(13, len(candidate)):
                     print("PLop")
                     ts = candidate[j][2].split(',')
                     print(ts)
                     for k in ts:
                         if k in flattimestamps:
                             print("Should be removed")
-#                    remove
-#                    print("Removed  ")
+                        #                    remove
+                        #                    print("Removed  ")
 
             # Mise à jour du patters
             element = []
@@ -82,19 +80,18 @@ def findPatternsWithRevision(expertPatterns, miningPatterns):
             element.append(idx)
             results.append(element)
         except ValueError:
-            #print("Pattern non trouvé : "+pattern)
+            # print("Pattern non trouvé : "+pattern)
             pass
-        linenumber+=1
+        linenumber += 1
     return results
 
-def generateGraph(ra, rb, rc):
 
+def generateGraph(ra, rb, rc):
     x = list(range(len(ra)))
 
     a = []
     b = []
     c = []
-
 
     for elt in ra:
         a.append(elt[1])
@@ -102,7 +99,6 @@ def generateGraph(ra, rb, rc):
         b.append(elt[1])
     for elt in rc:
         c.append(elt[1])
-
 
     print(x)
     print(a)
@@ -119,12 +115,12 @@ def generateGraph(ra, rb, rc):
     plt.show()
 
 
-
 # CLASS ANALYSER
 class Analyser:
     """
     Représentation d'un résultat d'analyse
     """
+
     def __init__(self):
         """
         :param results: contient l
@@ -151,4 +147,3 @@ class Analyser:
             w = csv.DictWriter(outfile, self.results[0].keys())
             w.writeheader()
             w.writerows(self.results)
-
