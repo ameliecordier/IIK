@@ -1,35 +1,29 @@
 from datahandler import expertPatterns
 from datahandler import miningPatterns
-from datahandler import analyser
-import random
+from datahandler import analyser as analyser
 
-
-def tryExpertPatterns():
+def tryExpertPatterns(filename):
     """
     Expérimentations avec la classe expertPatterns
     """
-    filename = "DATA/ibert_motifs.csv"
-
     ep = expertPatterns.ExpertPatterns()
     ep.getPatterns(filename)
     ep.printPatterns()
     print(ep.getSetOfObselTypes())
 
-def tryRawResults():
+
+def tryRawResults(filea, fileb, filec):
     """
     Expérimentations de la classe MiningPatterns en mode Raw
     """
-    ibert = "DATA/ibert_results.csv"
-    debussy = "DATA/Debussy_Syrinx_out1.csv"
-    reichert = "DATA/Reichert_tarentelle_out1.csv"
 
     ri = miningPatterns.MiningPatterns()
     rb = miningPatterns.MiningPatterns()
     rr = miningPatterns.MiningPatterns()
 
-    ri.getRawMiningResults(ibert)
-    rb.getRawMiningResults(debussy)
-    rr.getRawMiningResults(reichert)
+    ri.getRawMiningResults(filea)
+    rb.getRawMiningResults(fileb)
+    rr.getRawMiningResults(filec)
     for line in ri.rawResults:
         if (len(line)-13)%11 != 0:
             print("error")
@@ -41,29 +35,25 @@ def tryRawResults():
             print("error")
 
 
-def tryResults():
+def tryResults(filename):
     """
     Expérimentations de la classe MiningPatterns en mode standard
     """
-    filename = "DATA/ibert_results_test.csv"
 
     rr = miningPatterns.MiningPatterns()
     rr.getMiningResults(filename)
     rr.printMiningResults()
 
-def tryFindPatterns():
+
+def tryFindPatterns(mining, expert, output):
     """
     Expérimentation de la méthode findPatterns
     """
 
-    filename="DATA/ibert_results.csv"
-    outputfilename="DATA/output.csv"
-    expertfile = "DATA/ibert_motifs.csv"
-
     rr = miningPatterns.MiningPatterns()
     ep = expertPatterns.ExpertPatterns()
-    rr.getMiningResults(filename)
-    ep.getPatterns(expertfile)
+    rr.getMiningResults(mining)
+    ep.getPatterns(expert)
     sortedra = analyser.sortBy(0, False, rr)
     sortedrb = analyser.sortBy(4, True, rr)
     sortedrc = analyser.sortBy(7, True, rr)
@@ -75,45 +65,58 @@ def tryFindPatterns():
     print("Résultats : ")
     analyser.generateGraph(ra,rb,rc)
 
-def tryFindPatternsWithRevision():
+
+def tryNewMiningPatterns(filename):
     """
-    Expérimentation de la méthode findPatternsWithRevision
+    Expérimentations de la méthode mining patterns
     """
-
-    filename="DATA/ibert_results.csv"
-    outputfilename="DATA/output.csv"
-    expertfile = "DATA/ibert_motifs.csv"
-
-    rr = miningPatterns.MiningPatterns()
-    ep = expertPatterns.ExpertPatterns()
-    rr.getMiningResults(filename)
-    ep.getPatterns(expertfile)
-
-    analyser.findPatternsWithRevision(ep, rr)
-
-def tryNewMiningPatterns():
-
-    filename="DATA/sortDataSet.csv"
-    #filename="DATA/Ibert_Entracte_out1.csv"
-
     rr = list(miningPatterns.readRows(filename, 13, 11))
-
     for elt in rr:
         print(elt)
-
     print("Break")
-
     miningPatterns.sortBy(rr, [("freq", "desc"), ("cov int", "asc"), ("recov", "desc")])
-
-
     for elt in rr:
         print(elt.infos["freq"], elt.infos["cov int"], elt.infos["recov"])
 
 
+def tryAnalysis(mining, expert, output, output2):
+    """
+    Experimentations des analyses brutes
+    """
 
-#tryExpertPatterns()
-#tryRawResults()
-#tryResults()
-#tryFindPatterns()
-#tryFindPatternsWithRevision()
-tryNewMiningPatterns()
+
+    ep = expertPatterns.ExpertPatterns()
+    ep.getPatterns(expert)
+
+    mp = list(miningPatterns.readRows(mining, 13, 11))
+    analyserRes = analyser.findPatterns(ep, mp)
+    analyserRes.toFile(output)
+
+    miningPatterns.sortBy(mp, [("freq", "desc")])
+    for i in range(40):
+        print(mp[i].infos)
+
+    analyserRes = analyser.findPatterns(ep, mp)
+    analyserRes.toFile(output2)
+
+
+debussy = "DATA/Debussy_Syrinx_out1_court.csv"
+debussy_expert = "DATA/Debussy_Syrinx_court.txt"
+ibert = "DATA/Ibert_Entracte_out1.csv"
+ibert_expert = "DATA/ibert_motifs.csv"
+reichert = "DATA/Reichert_tarentelle_out1.csv"
+reichert_expert = "DATA/Reichert_tarentelle_motifs.txt"
+
+
+#tryExpertPatterns(filename)
+#tryRawResults(filea, fileb, filec)
+#tryResults(filename)
+#tryFindPatterns(mining, expert, output)
+#tryNewMiningPatterns(filename)
+
+#TODO : tests des méthodes above
+mining = ibert
+expert =ibert_expert
+output = "DATA/output.csv"
+output2 = "DATA/output2.csv"
+tryAnalysis(mining, expert, output, output2)
