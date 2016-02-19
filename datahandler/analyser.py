@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from matplotlib import pyplot as plt
 import csv
 
+from matplotlib import pyplot as plt
+from datahandler import miningPatterns
 
 def findPatterns(expertPatterns, miningPatterns):
     """
@@ -29,61 +30,57 @@ def findPatterns(expertPatterns, miningPatterns):
 
     return analyser
 
+def isValid(p, ep):
+    return p in ep.patterns
 
-def findPatternsWithRevision(expertPatterns, miningPatterns):
+
+def findPatternsWithRevision(expertPatterns, miningPatternsList):
     """
+    Retrouve la position des patterns experts avec révision du fichier
+    :param expertPatterns:
+    :param miningPatterns:
+    :return:
     """
-    editedMP = miningPatterns
-    linenumber = 0
-    results = []
-    for line in editedMP.results:
-        pattern = line[1]
-        try:
+    analyser = Analyser()
+    patternList = [elt.infos["motif Lily"] for elt in reversed(miningPatternsList)]
+
+    while patternList:
+        # Récup du nom du pattern
+        pattern = patternList.pop()
+
+        if isValid(pattern, expertPatterns):
+            # Récup du pattern dans mp
+            for elt in miningPatternsList:
+                if elt.infos["motif Lily"] == pattern:
+                    fullPattern = elt
+                    fullPatternIdx = miningPatternsList.index(elt)
+                    break
+
+            # Récup de l'index du pattern dans ep
             idx = expertPatterns.patterns.index(pattern)
-            # Start du cleanup
-            # On supprime le patter de la liste
-            # editedMP.results
-            # for candidate in editedMP.results:
-            #    print(candidate)
-            print(pattern)
-            print(line)
-            timestamps = []
-            timestamps.append(line[2].split(','))
-            for i in range(13, len(line)):
-                timestamps.append(line[i][2].split(','))
 
-            flattimestamps = [y for x in timestamps for y in x]
-            # print(timestamps)
-            # print(flattimestamps)
+            # Ajout des infos du pattern aux résultats
+            result = {}
+            result["pattern"] = pattern
+            result["idxExpert"] = idx
+            result["idxMining"] = fullPatternIdx
+            analyser.addResult(result)
 
-            for candidate in editedMP.results:
-                print("Candidate")
-                print(candidate)
-                print(len(candidate))
-                # Traitement de la première occurrence
+            # Récupération du set d'occurrences
+            stampsSet = [elt.get("Stamps list") for elt in fullPattern.occ]
+            stampsSet = list(map(list, stampsSet))
+            stampsSet = set([y for x in stampsSet for y in x])
 
-                # Traitement des autres occurrences
-                for j in range(13, len(candidate)):
-                    print("PLop")
-                    ts = candidate[j][2].split(',')
-                    print(ts)
-                    for k in ts:
-                        if k in flattimestamps:
-                            print("Should be removed")
-                        #                    remove
-                        #                    print("Removed  ")
+            # Élimination de tous les patterns recouverts
+            miningPatterns.clearObsoletePatterns(miningPatternsList, stampsSet, patternList)
 
-            # Mise à jour du patters
-            element = []
-            element.append(pattern)
-            element.append(linenumber)
-            element.append(idx)
-            results.append(element)
-        except ValueError:
-            # print("Pattern non trouvé : "+pattern)
-            pass
-        linenumber += 1
-    return results
+            # Suppression du pattern étudié
+            #miningPatterns.remove(miningPatternsList, pattern)
+            #miningPatternsList.remove(fullPattern)
+            print(len(miningPatternsList))
+
+    return analyser
+
 
 
 def generateGraph(ra, rb, rc):

@@ -80,7 +80,7 @@ def tryNewMiningPatterns(filename):
         print(elt.infos["freq"], elt.infos["cov int"], elt.infos["recov"])
 
 
-def try_analysis(mining, expert, output, output2):
+def tryAnalysis(mining, expert, output, output2):
     """
     Experimentations des analyses brutes
     """
@@ -99,6 +99,39 @@ def try_analysis(mining, expert, output, output2):
     analyserRes = analyser.findPatterns(ep, mp)
     analyserRes.toFile(output2)
 
+def tryAnalysisWithRemove(mining, expert, outputRev):
+
+    ep = expertPatterns.ExpertPatterns()
+    ep.getPatterns(expert)
+
+    mp = list(miningPatterns.readRows(mining, 13, 11))
+    analyserRes = analyser.findPatternsWithRevision(ep, mp)
+    analyserRes.toFile(outputRev)
+
+    print(analyserRes)
+
+
+def tryComparativeAnalysis(mining, expert, outputStand, outputRev):
+
+    ep = expertPatterns.ExpertPatterns()
+    ep.getPatterns(expert)
+
+    mp = list(miningPatterns.readRows(mining, 13, 11))
+    mpRev = list(miningPatterns.readRows(mining, 13, 11))
+
+
+    miningPatterns.sortBy(mp, [("cov evt", "desc")])
+    analyserRes = analyser.findPatterns(ep, mp)
+    analyserRes.toFile(outputStand)
+
+
+    miningPatterns.sortBy(mpRev, [("cov evt", "desc")])
+    analyserResRev = analyser.findPatternsWithRevision(ep, mpRev)
+    analyserResRev.toFile(outputRev)
+
+    print(analyserRes)
+
+
 
 debussy = "DATA/Debussy_Syrinx_out1_court.csv"
 debussy_expert = "DATA/Debussy_Syrinx_court.txt"
@@ -106,16 +139,19 @@ ibert = "DATA/Ibert_Entracte_out1.csv"
 ibert_expert = "DATA/ibert_motifs.csv"
 reichert = "DATA/Reichert_tarentelle_out1.csv"
 reichert_expert = "DATA/Reichert_tarentelle_motifs.txt"
+mining = ibert
+expert = ibert_expert
+output = "DATA/output.csv"
+output2 = "DATA/output2.csv"
+outputStand = "DATA/outputstand2.csv"
+outputRev = "DATA/outputrev2.csv"
 
 # tryExpertPatterns(filename)
 # tryRawResults(filea, fileb, filec)
 # tryResults(filename)
 # tryFindPatterns(mining, expert, output)
 # tryNewMiningPatterns(filename)
+# #tryAnalysis(mining, expert, output, output2)
+#tryAnalysisWithRemove(mining, expert, outputRev)
+tryComparativeAnalysis(mining, expert, outputStand, outputRev)
 
-# TODO : tests des méthodes above
-mining = ibert
-expert = ibert_expert
-output = "DATA/output.csv"
-output2 = "DATA/output2.csv"
-tryAnalysis(mining, expert, output, output2)

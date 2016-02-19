@@ -79,6 +79,26 @@ def sortBy(patterns, criteria):
             order = True
         patterns.sort(key=lambda pattern: pattern.infos[crit[0]], reverse=order)
 
+#def remove(patterns, pattern):
+#    for elt in patterns:
+#        if elt.infos["motif Lily"] == pattern:
+#            patterns.remove(elt)
+#            break
+
+def clearObsoletePatterns(mp, stamps, patternList):
+    for pattern in mp:
+        patternName = ""
+        for occ in pattern.occ:
+            if stamps & occ["Stamps list"]:
+                #print("patternRemoved", pattern, stamps, occ["Stamps list"])
+                patternName = pattern.infos["motif Lily"]
+                mp.remove(pattern)
+                break
+        if len(patternName) > 0:
+            try:
+                patternList.remove(patternName)
+            except:
+                pass
 
 # CLASS PATTERN
 class Pattern:
@@ -144,3 +164,4 @@ class Pattern:
         """
         print("Infos des occurences")
         print(self.occ[0].keys())
+
