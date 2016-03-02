@@ -26,6 +26,7 @@ class TestMiningPatterns:
     def teardown_class(cls):
         print("=== Fin de test de la classe MiningPatterns")
 
+
     def test_validFreq(cls):
         """
         Vérifie que la fréquence annoncée est égale au nb d'occurrences
