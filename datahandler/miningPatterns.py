@@ -218,13 +218,14 @@ class Patterns:
 
         # Constitution d'une liste de patterns à analyser
         patternList = [elt.infos["motif Lily"] for elt in reversed(self.patterns)]
-        print("Pattern list : ", patternList)
+        #print("Pattern list : ", patternList)
 
         # On boucle tant qu'il reste des patterns à analyser
         while patternList:
+            print("Patterns restants : ", len(patternList))
             # Récupération du nom du pattern
             pattern = patternList.pop()
-            print("Pattern removed", pattern)
+            #print("Pattern removed", pattern)
 
 
             # Si c'est un pattern de l'expert, on note les résultats et on met à jour
@@ -246,8 +247,8 @@ class Patterns:
                 result["full pattern"] = fullPattern
                 analyse.addResult(result)
 
-                for p in self.patterns:
-                    print(p.infos["motif Lily"])
+                #for p in self.patterns:
+                    #print(p.infos["motif Lily"])
 
                  # Récupération de l'ensemble des occurrences de ce pattern (timestamps)
                 stampsSet = [elt.get("Stamps list") for elt in fullPattern.occ]

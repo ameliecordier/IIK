@@ -157,8 +157,6 @@ def tryAnalyser(mining, expert, nameExpe):
     ep = expertPatterns.ExpertPatterns()
     ep.getPatterns(expert)
 
-    print(ep.patterns)
-
     mpRand = miningPatterns.Patterns(mining, ";", 13, 11)
     mpFreq = miningPatterns.Patterns(mining, ";", 13, 11)
     mpCove = miningPatterns.Patterns(mining, ";", 13, 11)
@@ -263,8 +261,8 @@ def tryAnalyser(mining, expert, nameExpe):
         covrev.append(elt["idxMining"])
 
 
-
-    pp = PdfPages("DATA/ibert.pdf")
+    pdfname = "DATA/" + nameExpe + ".pdf"
+    pp = PdfPages(pdfname)
 
     plt.figure(1)
     plt.plot(x, random, 'r',  linestyle="-", label="Random")
@@ -318,12 +316,410 @@ def tryAnalyser(mining, expert, nameExpe):
 
     pp.close()
 
+def tryAnalyserLongeur(mining, expert, nameExpe):
+
+    ep = expertPatterns.ExpertPatterns()
+    ep.getPatterns(expert)
+
+    print(ep.patterns)
+
+    mpRand = miningPatterns.Patterns(mining, ";", 13, 11)
+    mpFreq = miningPatterns.Patterns(mining, ";", 13, 11)
+    mpCove = miningPatterns.Patterns(mining, ";", 13, 11)
+
+    mpRandNoRev = miningPatterns.Patterns(mining, ";", 13, 11)
+    mpFreqNoRev = miningPatterns.Patterns(mining, ";", 13, 11)
+    mpCoveNoRev = miningPatterns.Patterns(mining, ";", 13, 11)
+
+
+    # Random
+    fname = "DATA/" + nameExpe + "_no-rev_beforeSortRandom.csv"
+    mpRandNoRev.toFile(fname)
+    anaRandNoRev = mpRandNoRev.findPatterns(ep)
+    fname = "DATA/" + nameExpe + "_no-rev_analyseRandom.csv"
+    anaRandNoRev.toFile(fname)
+    fname = "DATA/" + nameExpe + "_no-rev_afterSortRandom.csv"
+    mpRandNoRev.toFile(fname)
+
+    # Freq
+    fname = "DATA/" + nameExpe + "_no-rev_beforeSortFreq.csv"
+    mpFreqNoRev.toFile(fname)
+    mpFreqNoRev.sortBy([("long", "desc"), ("freq", "desc")])
+    anaFreqNoRev = mpFreqNoRev.findPatterns(ep)
+    fname = "DATA/" + nameExpe + "_no-rev_analyseFreq.csv"
+    anaFreqNoRev.toFile(fname)
+    fname = "DATA/" + nameExpe + "_no-rev_afterSortFreq.csv"
+    mpFreqNoRev.toFile(fname)
+
+    # Cov evt
+    fname = "DATA/" + nameExpe + "_no-rev_beforeSortCovEvt.csv"
+    mpCoveNoRev.toFile(fname)
+    mpCoveNoRev.sortBy([("long", "desc"), ("cov evt", "desc")])
+    anaCoveNoRev = mpCoveNoRev.findPatterns(ep)
+    fname = "DATA/" + nameExpe + "_no-rev_analyseCovEvt.csv"
+    anaCoveNoRev.toFile(fname)
+    fname = "DATA/" + nameExpe + "_no-rev_afterSortCovEvt.csv"
+    mpCoveNoRev.toFile(fname)
+
+
+    # Avec rév
+    mpRand = miningPatterns.Patterns(mining, ";", 13, 11)
+    mpFreq = miningPatterns.Patterns(mining, ";", 13, 11)
+    mpCove = miningPatterns.Patterns(mining, ";", 13, 11)
+
+
+    # Random
+    fname = "DATA/" + nameExpe + "_rev_beforeSortRandom.csv"
+    mpRand.toFile(fname)
+    anaRand = mpRand.findPatternsWithRevision(ep)
+    fname = "DATA/" + nameExpe + "_rev_analyseRandom.csv"
+    anaRand.toFile(fname)
+    fname = "DATA/" + nameExpe + "_rev_afterSortRandom.csv"
+    mpRand.toFile(fname)
+
+    # Freq
+    fname = "DATA/" + nameExpe + "_rev_beforeSortFreq.csv"
+    mpFreq.toFile(fname)
+    mpFreq.sortBy([("long", "desc"), ("freq", "desc")])
+    anaFreq = mpFreq.findPatternsWithRevision(ep)
+    fname = "DATA/" + nameExpe + "_rev_analyseFreq.csv"
+    anaFreq.toFile(fname)
+    fname = "DATA/" + nameExpe + "_rev_afterSortFreq.csv"
+    mpFreq.toFile(fname)
+
+    # Cov evt
+    fname = "DATA/" + nameExpe + "_rev_beforeSortCovEvt.csv"
+    mpCove.toFile(fname)
+    mpCove.sortBy([("long", "desc"), ("cov evt", "desc")])
+    anaCove = mpCove.findPatternsWithRevision(ep)
+    fname = "DATA/" + nameExpe + "_rev_analyseCovEvt.csv"
+    anaCove.toFile(fname)
+    fname = "DATA/" + nameExpe + "_rev_afterSortCovEvt.csv"
+    mpCove.toFile(fname)
+
+
+    # Génération des graphs
+    x = list(range(len(anaRandNoRev.results)))
+    y = list(range(len(anaFreqNoRev.results)))
+    z = list(range(len(anaCoveNoRev.results)))
+    xrev = list(range(len(anaRand.results)))
+    yrev = list(range(len(anaFreq.results)))
+    zrev = list(range(len(anaCove.results)))
+
+    random = []
+    freq = []
+    cov = []
+    randomrev = []
+    freqrev = []
+    covrev = []
+
+    for elt in anaRandNoRev.results:
+        random.append(elt["idxMining"])
+    for elt in anaFreqNoRev.results:
+        freq.append(elt["idxMining"])
+    for elt in anaCoveNoRev.results:
+        cov.append(elt["idxMining"])
+    for elt in anaRand.results:
+        randomrev.append(elt["idxMining"])
+    for elt in anaFreq.results:
+        freqrev.append(elt["idxMining"])
+    for elt in anaCove.results:
+        covrev.append(elt["idxMining"])
+
+
+
+    pp = PdfPages("DATA/reichertLong.pdf")
+
+    plt.figure(1)
+    plt.plot(x, random, 'r',  linestyle="-", label="Random")
+    plt.plot(y, freq, 'g',  linestyle="--", label="Fréq")
+    plt.plot(z, cov, 'b',  linestyle="-.", label="Cov")
+    plt.xlabel('Itération')
+    plt.ylabel('Rang du pattern')
+    plt.title('Comparaison des résultats sans révision')
+    plt.legend()
+    plt.savefig(pp, format="pdf")
+
+
+    plt.figure(2)
+    plt.plot(xrev, randomrev, 'r', linestyle="-", label="Random")
+    plt.plot(yrev, freqrev, 'g',  linestyle="--", label="Fréq")
+    plt.plot(zrev, covrev, 'b',  linestyle="-.", label="Cov")
+    plt.xlabel('Itération')
+    plt.ylabel('Rang du pattern')
+    plt.title('Comparaison des résultats avec révision')
+    plt.legend()
+    plt.savefig(pp, format="pdf")
+
+
+    plt.figure(3)
+    plt.plot(x, random, 'r',  linestyle="-", label="Random sans révision")
+    plt.plot(xrev, randomrev, 'g', linestyle="--", label="Random avec révision")
+    plt.xlabel('Itération')
+    plt.ylabel('Rang du pattern')
+    plt.title('Performances de random avec / sans révision')
+    plt.legend()
+    plt.savefig(pp, format="pdf")
+
+    plt.figure(4)
+    plt.plot(y, freq, 'r', linestyle="-", label="Freq sans révision")
+    plt.plot(yrev, freqrev, 'g', linestyle="--", label="Freq avec révision")
+    plt.xlabel('Itération')
+    plt.ylabel('Rang du pattern')
+    plt.title('Performances de freq avec / sans révision')
+    plt.legend()
+    plt.savefig(pp, format="pdf")
+
+    plt.figure(5)
+    plt.plot(z, cov, 'r', linestyle="-", label="Cov evt sans révision")
+    plt.plot(zrev, covrev, 'g', linestyle="--", label="Cov evt avec révision")
+    plt.xlabel('Itération')
+    plt.ylabel('Rang du pattern')
+    plt.title('Performances de cov evt avec / sans révision')
+    plt.legend()
+    plt.savefig(pp, format="pdf")
+
+
+    pp.close()
+
+def tryAnalyserDebussy(mining, expert, nameExpe):
+
+    ep = expertPatterns.ExpertPatterns()
+    ep.getPatterns(expert)
+
+    print(ep.patterns)
+
+    mpRand = miningPatterns.Patterns(mining, ";", 13, 11)
+    mpFreq = miningPatterns.Patterns(mining, ";", 13, 11)
+    mpCove = miningPatterns.Patterns(mining, ";", 13, 11)
+
+    mpRandNoRev = miningPatterns.Patterns(mining, ";", 13, 11)
+    mpFreqNoRev = miningPatterns.Patterns(mining, ";", 13, 11)
+    mpCoveNoRev = miningPatterns.Patterns(mining, ";", 13, 11)
+
+
+    # Random
+    fname = "DATA/" + nameExpe + "_no-rev_beforeSortRandom.csv"
+    mpRandNoRev.toFile(fname)
+    anaRandNoRev = mpRandNoRev.findPatterns(ep)
+    fname = "DATA/" + nameExpe + "_no-rev_analyseRandom.csv"
+    anaRandNoRev.toFile(fname)
+    fname = "DATA/" + nameExpe + "_no-rev_afterSortRandom.csv"
+    mpRandNoRev.toFile(fname)
+
+    # Freq
+    fname = "DATA/" + nameExpe + "_no-rev_beforeSortFreq.csv"
+    mpFreqNoRev.toFile(fname)
+    mpFreqNoRev.sortBy([("long", "desc"), ("freq", "desc")])
+    anaFreqNoRev = mpFreqNoRev.findPatterns(ep)
+    fname = "DATA/" + nameExpe + "_no-rev_analyseFreq.csv"
+    anaFreqNoRev.toFile(fname)
+    fname = "DATA/" + nameExpe + "_no-rev_afterSortFreq.csv"
+    mpFreqNoRev.toFile(fname)
+
+    # Cov evt
+    fname = "DATA/" + nameExpe + "_no-rev_beforeSortCovEvt.csv"
+    mpCoveNoRev.toFile(fname)
+    mpCoveNoRev.sortBy([("long", "desc"), ("cov evt", "desc")])
+    anaCoveNoRev = mpCoveNoRev.findPatterns(ep)
+    fname = "DATA/" + nameExpe + "_no-rev_analyseCovEvt.csv"
+    anaCoveNoRev.toFile(fname)
+    fname = "DATA/" + nameExpe + "_no-rev_afterSortCovEvt.csv"
+    mpCoveNoRev.toFile(fname)
+
+
+    # Avec rév
+    mpRand = miningPatterns.Patterns(mining, ";", 13, 11)
+    mpFreq = miningPatterns.Patterns(mining, ";", 13, 11)
+    mpCove = miningPatterns.Patterns(mining, ";", 13, 11)
+
+
+    # Random
+    fname = "DATA/" + nameExpe + "_rev_beforeSortRandom.csv"
+    mpRand.toFile(fname)
+    anaRand = mpRand.findPatternsWithRevision(ep)
+    fname = "DATA/" + nameExpe + "_rev_analyseRandom.csv"
+    anaRand.toFile(fname)
+    fname = "DATA/" + nameExpe + "_rev_afterSortRandom.csv"
+    mpRand.toFile(fname)
+
+    # Freq
+    fname = "DATA/" + nameExpe + "_rev_beforeSortFreq.csv"
+    mpFreq.toFile(fname)
+    mpFreq.sortBy([("long", "desc"), ("freq", "desc")])
+    anaFreq = mpFreq.findPatternsWithRevision(ep)
+    fname = "DATA/" + nameExpe + "_rev_analyseFreq.csv"
+    anaFreq.toFile(fname)
+    fname = "DATA/" + nameExpe + "_rev_afterSortFreq.csv"
+    mpFreq.toFile(fname)
+
+    # Cov evt
+    fname = "DATA/" + nameExpe + "_rev_beforeSortCovEvt.csv"
+    mpCove.toFile(fname)
+    mpCove.sortBy([("long", "desc"), ("cov evt", "desc")])
+    anaCove = mpCove.findPatternsWithRevision(ep)
+    fname = "DATA/" + nameExpe + "_rev_analyseCovEvt.csv"
+    anaCove.toFile(fname)
+    fname = "DATA/" + nameExpe + "_rev_afterSortCovEvt.csv"
+    mpCove.toFile(fname)
+
+
+    # Génération des graphs
+    x = list(range(len(anaRandNoRev.results)))
+    y = list(range(len(anaFreqNoRev.results)))
+    z = list(range(len(anaCoveNoRev.results)))
+    xrev = list(range(len(anaRand.results)))
+    yrev = list(range(len(anaFreq.results)))
+    zrev = list(range(len(anaCove.results)))
+
+    random = []
+    freq = []
+    cov = []
+    randomrev = []
+    freqrev = []
+    covrev = []
+
+    for elt in anaRandNoRev.results:
+        random.append(elt["idxMining"])
+    for elt in anaFreqNoRev.results:
+        freq.append(elt["idxMining"])
+    for elt in anaCoveNoRev.results:
+        cov.append(elt["idxMining"])
+    for elt in anaRand.results:
+        randomrev.append(elt["idxMining"])
+    for elt in anaFreq.results:
+        freqrev.append(elt["idxMining"])
+    for elt in anaCove.results:
+        covrev.append(elt["idxMining"])
+
+
+
+    pp = PdfPages("DATA/reichertLong.pdf")
+
+    plt.figure(1)
+    plt.plot(x, random, 'r',  linestyle="-", label="Random")
+    plt.plot(y, freq, 'g',  linestyle="--", label="Fréq")
+    plt.plot(z, cov, 'b',  linestyle="-.", label="Cov")
+    plt.xlabel('Itération')
+    plt.ylabel('Rang du pattern')
+    plt.title('Comparaison des résultats sans révision')
+    plt.legend()
+    plt.savefig(pp, format="pdf")
+
+
+    plt.figure(2)
+    plt.plot(xrev, randomrev, 'r', linestyle="-", label="Random")
+    plt.plot(yrev, freqrev, 'g',  linestyle="--", label="Fréq")
+    plt.plot(zrev, covrev, 'b',  linestyle="-.", label="Cov")
+    plt.xlabel('Itération')
+    plt.ylabel('Rang du pattern')
+    plt.title('Comparaison des résultats avec révision')
+    plt.legend()
+    plt.savefig(pp, format="pdf")
+
+
+    plt.figure(3)
+    plt.plot(x, random, 'r',  linestyle="-", label="Random sans révision")
+    plt.plot(xrev, randomrev, 'g', linestyle="--", label="Random avec révision")
+    plt.xlabel('Itération')
+    plt.ylabel('Rang du pattern')
+    plt.title('Performances de random avec / sans révision')
+    plt.legend()
+    plt.savefig(pp, format="pdf")
+
+    plt.figure(4)
+    plt.plot(y, freq, 'r', linestyle="-", label="Freq sans révision")
+    plt.plot(yrev, freqrev, 'g', linestyle="--", label="Freq avec révision")
+    plt.xlabel('Itération')
+    plt.ylabel('Rang du pattern')
+    plt.title('Performances de freq avec / sans révision')
+    plt.legend()
+    plt.savefig(pp, format="pdf")
+
+    plt.figure(5)
+    plt.plot(z, cov, 'r', linestyle="-", label="Cov evt sans révision")
+    plt.plot(zrev, covrev, 'g', linestyle="--", label="Cov evt avec révision")
+    plt.xlabel('Itération')
+    plt.ylabel('Rang du pattern')
+    plt.title('Performances de cov evt avec / sans révision')
+    plt.legend()
+    plt.savefig(pp, format="pdf")
+
+
+    pp.close()
+
+def tryAnalyserIbert(mining, expert, nameExpe):
+
+    ep = expertPatterns.ExpertPatterns()
+    ep.getPatterns(expert)
+
+    print("Patterns read")
+
+    # Avec rév
+    mpFreq = miningPatterns.Patterns(mining, ";", 13, 11)
+
+    print("mp Freq ok")
+
+
+    mpCove = mpFreq
+    #miningPatterns.Patterns(mining, ";", 13, 11)
+
+    print("mp Cove ok")
+
+
+    # Freq
+    fname = "DATA/" + nameExpe + "_rev_beforeSortFreq.csv"
+    mpFreq.toFile(fname)
+    mpFreq.sortBy([("freq", "desc")])
+    anaFreq = mpFreq.findPatternsWithRevision(ep)
+    fname = "DATA/" + nameExpe + "_rev_analyseFreq.csv"
+    anaFreq.toFile(fname)
+    fname = "DATA/" + nameExpe + "_rev_afterSortFreq.csv"
+    mpFreq.toFile(fname)
+
+    # Cov evt
+    fname = "DATA/" + nameExpe + "_rev_beforeSortCovEvt.csv"
+    mpCove.toFile(fname)
+    mpCove.sortBy([("cov evt", "desc")])
+    anaCove = mpCove.findPatternsWithRevision(ep)
+    fname = "DATA/" + nameExpe + "_rev_analyseCovEvt.csv"
+    anaCove.toFile(fname)
+    fname = "DATA/" + nameExpe + "_rev_afterSortCovEvt.csv"
+    mpCove.toFile(fname)
+
+
+    # Génération des graphs
+    yrev = list(range(len(anaFreq.results)))
+    zrev = list(range(len(anaCove.results)))
+
+    freqrev = []
+    covrev = []
+
+    for elt in anaFreq.results:
+        freqrev.append(elt["idxMining"])
+    for elt in anaCove.results:
+        covrev.append(elt["idxMining"])
+
+
+    pdfname = "DATA/" + nameExpe + ".pdf"
+    pp = PdfPages(pdfname)
+
+    plt.figure(1)
+    plt.plot(yrev, freqrev, 'g',  linestyle="--", label="Fréq")
+    plt.plot(zrev, covrev, 'b',  linestyle="-.", label="Cov")
+    plt.xlabel('Itération')
+    plt.ylabel('Rang du pattern')
+    plt.title('Comparaison des résultats avec révision')
+    plt.legend()
+    plt.savefig(pp, format="pdf")
+
+    pp.close()
 
 
 # Nom des fichiers
 debussy = "DATA/debussy_motifs.csv"
 debussy_expert = "DATA/Debussy_Syrinx_court.txt"
-ibert = "DATA/Ibert_Entracte_out1.csv"
+ibert = "DATA/Ibert_Entracte_out2.csv"
 ibert_expert = "DATA/ibert_motifs.csv"
 reichert = "DATA/Reichert_tarentelle_out1.csv"
 reichert_expert = "DATA/Reichert_tarentelle_motifs.txt"
@@ -332,12 +728,6 @@ dataperso_expert = "DATA/datatest_expert.csv"
 
 mining = ibert
 expert = ibert_expert
-
-output = "DATA/output.csv"
-output2 = "DATA/output2.csv"
-outputStand = "DATA/outputstand2.csv"
-outputRev = "DATA/outputrev2.csv"
-
 
 # tryExpertPatterns(filename)
 # tryRawResults(filea, fileb, filec)
@@ -348,4 +738,6 @@ outputRev = "DATA/outputrev2.csv"
 # tryAnalysisWithRemove(mining, expert, outputRev)
 # tryComparativeAnalysis(mining, expert, outputStand, outputRev)
 # niemeRefacto(mining, expert)
-tryAnalyser(mining, expert, "ibert")
+#tryAnalyserLongeur(mining, expert, "reichert_long")
+tryAnalyserIbert(mining, expert, "ibert_longmotifs2")
+
