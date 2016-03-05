@@ -719,8 +719,8 @@ def tryAnalyserIbert(mining, expert, nameExpe):
 # Nom des fichiers
 debussy = "DATA/debussy_motifs.csv"
 debussy_expert = "DATA/Debussy_Syrinx_court.txt"
-ibert = "DATA/Ibert_Entracte_out2.csv"
-ibert_expert = "DATA/ibert_motifs.csv"
+ibert = "DATA/ibert_400_fouille.csv"
+ibert_expert = "DATA/ibert_400.csv"
 reichert = "DATA/Reichert_tarentelle_out1.csv"
 reichert_expert = "DATA/Reichert_tarentelle_motifs.txt"
 dataperso = "DATA/datatest.csv"
@@ -739,5 +739,5 @@ expert = ibert_expert
 # tryComparativeAnalysis(mining, expert, outputStand, outputRev)
 # niemeRefacto(mining, expert)
 #tryAnalyserLongeur(mining, expert, "reichert_long")
-tryAnalyserIbert(mining, expert, "ibert_longmotifs2")
+tryAnalyserIbert(mining, expert, "ibert_400")
 
