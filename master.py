@@ -338,6 +338,8 @@ sortingCov = [("long", "desc"), ("cov evt", "desc")]
 '''
 
 # Expé 7 : ibert v2, tri simple
+# Attention, pour celle-ci les fichiez n'ont pas été générés
+# TODO
 '''
 mining = "DATA/v2_ibert_fouille.csv"
 expert = "DATA/v2_ibert_expert.csv"
@@ -347,14 +349,14 @@ sortingCov = [("cov evt", "desc")]
 '''
 
 # Expé 8 : ibert v2, tri par longueur en premier
-# Super long
-
+# Super long (2h10)
+'''
 mining = "DATA/v2_ibert_fouille.csv"
 expert = "DATA/v2_ibert_expert.csv"
 xpname = "v2_ibert_tri_longueur"
 sortingFreq = [("long", "desc"), ("freq", "desc")]
 sortingCov = [("long", "desc"), ("cov evt", "desc")]
-
+'''
 
 # Expé 9 : debussy v2, tri simple
 '''
